@@ -2,55 +2,67 @@ package com.springboot.mysql.empdep.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import java.util.List;
-
 
 /**
  * The persistent class for the employees database table.
  * 
  */
 @Entity
-@Table(name="employees")
-@NamedQuery(name="Employee.findAll", query="SELECT e FROM Employee e")
+@Table(name = "employees")
+@NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e")
 public class Employee implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="emp_no")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "emp_no")
 	private int empNo;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="birth_date")
+	@Column(name = "birth_date")
 	private Date birthDate;
 
-	@Column(name="first_name")
+	@Column(name = "first_name")
 	private String firstName;
 
-	private String gender;
+	@Column(name = "gender")
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+
+	public Gender getGender() {
+		return gender;
+	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="hire_date")
+	@Column(name = "hire_date")
 	private Date hireDate;
 
-	@Column(name="last_name")
+	@Column(name = "last_name")
 	private String lastName;
 
-	//bi-directional many-to-one association to DeptEmp
-	@OneToMany(mappedBy="employee")
+	// bi-directional many-to-one association to DeptEmp
+	@JsonIgnore
+	@OneToMany(mappedBy = "employee",fetch=FetchType.LAZY)
 	private List<DeptEmp> deptEmps;
 
-	//bi-directional many-to-one association to DeptManager
-	@OneToMany(mappedBy="employee")
+	// bi-directional many-to-one association to DeptManager
+	@JsonIgnore
+	@OneToMany(mappedBy = "employee",fetch=FetchType.LAZY)
 	private List<DeptManager> deptManagers;
 
-	//bi-directional many-to-one association to Salary
-	@OneToMany(mappedBy="employee")
+	// bi-directional many-to-one association to Salary
+	@JsonIgnore
+	@OneToMany(mappedBy = "employee",fetch=FetchType.LAZY)
 	private List<Salary> salaries;
 
-	//bi-directional many-to-one association to Title
-	@OneToMany(mappedBy="employee")
+	// bi-directional many-to-one association to Title
+	@JsonIgnore
+	@OneToMany(mappedBy = "employee",fetch=FetchType.LAZY)
 	private List<Title> titles;
 
 	public Employee() {
@@ -78,14 +90,6 @@ public class Employee implements Serializable {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
-	}
-
-	public String getGender() {
-		return this.gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
 	}
 
 	public Date getHireDate() {
