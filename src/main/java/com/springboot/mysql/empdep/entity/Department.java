@@ -16,7 +16,7 @@ public class Department implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="dept_no")
 	private String deptNo;
 
@@ -24,11 +24,11 @@ public class Department implements Serializable {
 	private String deptName;
 
 	//bi-directional many-to-one association to DeptEmp
-	@OneToMany(mappedBy="department")
+	@OneToMany(mappedBy="department",fetch=FetchType.LAZY)
 	private List<DeptEmp> deptEmps;
 
 	//bi-directional many-to-one association to DeptManager
-	@OneToMany(mappedBy="department")
+	@OneToMany(mappedBy="department",fetch=FetchType.LAZY)
 	private List<DeptManager> deptManagers;
 
 	public Department() {
