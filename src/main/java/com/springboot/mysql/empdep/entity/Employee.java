@@ -92,6 +92,10 @@ public class Employee implements Serializable {
 		this.firstName = firstName;
 	}
 
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
 	public Date getHireDate() {
 		return this.hireDate;
 	}

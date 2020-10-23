@@ -1,5 +1,6 @@
 package com.springboot.mysql.empdep.service;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +9,16 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.mysql.empdep.entity.Employee;
 import com.springboot.mysql.empdep.repository.EmployeeRepository;
+import com.springboot.mysql.empdep.repository.EmployeeRepositoryImpl;
 
 @Service
 public class EmployeeService {
 
 	@Autowired
 	EmployeeRepository employeeRepository;
+	
+	@Autowired
+	EmployeeRepositoryImpl employeeRepositoryImpl;
 
 	public List<Employee> getAllEmployees() {
 		List<Employee> employees = new ArrayList<>();
@@ -35,6 +40,10 @@ public class EmployeeService {
 
 	public void deleteEmployee(Integer id) {
 		employeeRepository.deleteById(id);
+	}
+	
+	public List<Employee> searchEmployees(String lastName, String gender, Date dob){
+		return employeeRepositoryImpl.getEmployeebyLastNameGenderDOB(lastName, gender, dob);
 	}
 
 }

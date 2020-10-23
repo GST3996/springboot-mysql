@@ -1,5 +1,8 @@
 package com.springboot.mysql.empdep.ctrl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.mysql.empdep.entity.Employee;
@@ -33,10 +37,10 @@ public class Employeecontroller {
 	@SuppressWarnings("unchecked")
 	@GetMapping("/employees/{id}")
 	public ResponseEntity<Employee> getEmployee(@PathVariable Integer id) {
-		ResponseEntity<Employee> emp =   new ResponseEntity<Employee>(employeeService.getEmployee(id), HttpStatus.OK);
-		Employee employee =  emp.getBody();
-		if(employee.getEmpNo()==0) {
-			throw new EmployeeNotFoundException("id-" + id+" not found");
+		ResponseEntity<Employee> emp = new ResponseEntity<Employee>(employeeService.getEmployee(id), HttpStatus.OK);
+		Employee employee = emp.getBody();
+		if (employee.getEmpNo() == 0) {
+			throw new EmployeeNotFoundException("id-" + id + " not found");
 		}
 		return emp;
 	}
@@ -48,10 +52,10 @@ public class Employeecontroller {
 
 	@PutMapping("/employees/{id}")
 	public void updateEmployee(@PathVariable Integer id, @RequestBody Employee employee) {
-		ResponseEntity<Employee> emp =   new ResponseEntity<Employee>(employeeService.getEmployee(id), HttpStatus.OK);
-		Employee employeefromDB =  emp.getBody();
-		if(employeefromDB.getEmpNo()==0) {
-			throw new EmployeeNotFoundException("id-" + id+" not found");
+		ResponseEntity<Employee> emp = new ResponseEntity<Employee>(employeeService.getEmployee(id), HttpStatus.OK);
+		Employee employeefromDB = emp.getBody();
+		if (employeefromDB.getEmpNo() == 0) {
+			throw new EmployeeNotFoundException("id-" + id + " not found");
 		}
 		employee.setEmpNo(id);
 		employeeService.updateEmployee(id, employee);
@@ -60,6 +64,23 @@ public class Employeecontroller {
 	@DeleteMapping("/employees/{id}")
 	public void deleteEmployee(@PathVariable Integer id) {
 		employeeService.deleteEmployee(id);
+	}
+
+	@GetMapping("/employees/search")
+	public List<Employee> searchEmployee(@RequestParam("lastName") String lastName,
+			@RequestParam("gender") String gender, @RequestParam("birthDate") String birthDate) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+		Date date = null;
+		if (birthDate != null && birthDate != "") {
+			try {
+				date = sdf.parse(birthDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return employeeService.searchEmployees(lastName, gender, date);
 	}
 
 }
